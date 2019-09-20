@@ -13,6 +13,7 @@ trait BasicSimulation extends Simulation {
     val simulationDuration: Duration
     val pauseDuration: Duration
     val scenarioBuilder: ScenarioBuilder
+    val numberOfUsers: Int
 
     lazy val headers = Map(
         "Content-Type" -> "application/json",
