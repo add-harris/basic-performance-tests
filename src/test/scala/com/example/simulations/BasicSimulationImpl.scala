@@ -1,23 +1,46 @@
 package com.example.simulations
 
-import com.example.BasicSimulation
 import com.example.config.Config
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import io.gatling.http.protocol.HttpProtocolBuilder
 
 import scala.concurrent.duration._
 
-class BasicSimulationImpl extends BasicSimulation {
+class BasicSimulationImpl extends Simulation {
 
-  override val baseUrl: String = Config.baseUrl
+  //////////////////////
+  // Tests Parameters //
+  //////////////////////
 
-  override val simulationDuration: Duration = Config.simulationDuration milliseconds
+  val baseUrl: String = Config.baseUrl
 
-  override val pauseDuration : Duration = Config.pauseDuration seconds
+  val simulationDuration: Duration = Config.simulationDuration milliseconds
 
-  override val numberOfUsers: Int = Config.numberOfUsers
+  val pauseDuration : Duration = Config.pauseDuration seconds
 
-  override val scenarioBuilder = scenario("BasicSimulationImpl")
+  val numberOfUsers: Int = Config.numberOfUsers
+
+
+  ///////////////////////
+  // Common http stuff //
+  ///////////////////////
+
+  val headers = Map(
+    "Content-Type" -> "application/json",
+    "Cache-Control" -> "no-cache"
+  )
+
+  val httpProtocol: HttpProtocolBuilder = http
+    .baseUrl(baseUrl)
+    .headers(headers)
+
+
+  ////////////////////
+  // Setup scenario //
+  ////////////////////
+
+  val scenarioBuilder = scenario("BasicSimulationImpl")
     .during(simulationDuration) { // how long the simulation will run for i.e 60 seconds
       pace(pauseDuration) // how frequently the the action is executed
         .exec(http("request_1") // execute action
@@ -26,14 +49,24 @@ class BasicSimulationImpl extends BasicSimulation {
     }
 
 
+  /////////////////
+  // Setup Users //
+  /////////////////
+
   val populationBuilder = scenarioBuilder.inject(atOnceUsers(numberOfUsers)) // inject x number of users all at once
+
   // other examples in the docs: https://gatling.io/docs/3.2/general/simulation_setup/
   // more complicated examples include:
   // constantUsersPerSec(rate) during(duration)
   // rampUsersPerSec(rate1) to (rate2) during(duration)
 
-  setUp(populationBuilder)
-      .protocols(httpProtocol) // set common http attributes i.e. baseUrl, headers
+
+  ////////////////////
+  // Run Everything //
+  ////////////////////
+
+  setUp(populationBuilder) // inject scenarios
+      .protocols(httpProtocol) // inject http protocols
       .assertions( // set assertions
         global.successfulRequests.percent.gte(95), // 95% of requests are successful
         global.responseTime.mean.lt(120) // mean response time of all requests is under 120 (millis?)

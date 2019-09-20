@@ -15,14 +15,7 @@ trait BasicSimulation extends Simulation {
     val scenarioBuilder: ScenarioBuilder
     val numberOfUsers: Int
 
-    lazy val headers = Map(
-        "Content-Type" -> "application/json",
-        "Cache-Control" -> "no-cache"
-    )
 
-    lazy val httpProtocol: HttpProtocolBuilder = http
-      .baseUrl(baseUrl)
-      .headers(headers)
 
 }
 
