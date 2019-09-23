@@ -4,7 +4,7 @@ object Config {
 
   val baseUrl = System.getProperty("baseUrl", "http://localhost:8080")
 
-  val simulationDuration = System.getProperty("simulationDuration", "5000").toInt
+  val simulationDuration = System.getProperty("simulationDuration", "20000").toInt
 
   val pauseDuration = System.getProperty("pauseDuration", "5").toInt
 

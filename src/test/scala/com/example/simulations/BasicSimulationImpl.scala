@@ -28,8 +28,11 @@ class BasicSimulationImpl extends Simulation {
 
   val headers = Map(
     "Content-Type" -> "application/json",
-    "Cache-Control" -> "no-cache"
+    "Cache-Control" -> "no-cache",
+    "Authorization" -> getAuth
   )
+
+  def getAuth = "Basic YWxhZGRpbjpvcGVuc2VzYW1limport"
 
   val httpProtocol: HttpProtocolBuilder = http
     .baseUrl(baseUrl)
@@ -43,7 +46,7 @@ class BasicSimulationImpl extends Simulation {
   val scenarioBuilder = scenario("BasicSimulationImpl")
     .during(simulationDuration) { // how long the simulation will run for i.e 60 seconds
       pace(pauseDuration) // how frequently the the action is executed
-        .exec(http("request_1") // execute action
+        .exec(http("basic guest request") // execute action
           .get("/")
           .check(status.is(200))) // check result
     }
@@ -69,7 +72,7 @@ class BasicSimulationImpl extends Simulation {
       .protocols(httpProtocol) // inject http protocols
       .assertions( // set assertions
         global.successfulRequests.percent.gte(95), // 95% of requests are successful
-        global.responseTime.mean.lt(120) // mean response time of all requests is under 120 (millis?)
+        global.responseTime.mean.lt(120) // mean response time of all requests is under 120 (millis?) - 1.2 seconds
       )
 
 }
