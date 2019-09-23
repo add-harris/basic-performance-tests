@@ -1,5 +1,16 @@
+
+# To run
+
+run command:
+
+`mvn gatling:test -Dgatling.simulationClass=com.example.simulations.BasicSimulationImpl`
+
+or
+
+`./run-tests.sh`
+
+
 # Stuff to add
 
-- Config from system properties
 - Multiple scenarios
-
+- How to set-up maven-scala project
