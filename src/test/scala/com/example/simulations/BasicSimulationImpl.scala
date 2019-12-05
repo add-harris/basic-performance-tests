@@ -4,6 +4,7 @@ import com.example.config.Config
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.protocol.HttpProtocolBuilder
+import com.example.scenarios.{GetScenario, PostScenario}
 
 import scala.concurrent.duration._
 
@@ -39,24 +40,22 @@ class BasicSimulationImpl extends Simulation {
     .headers(headers)
 
 
-  ////////////////////
-  // Setup scenario //
-  ////////////////////
+  //////////////////////////////
+  // Setup Multiple Scenarios //
+  //////////////////////////////
 
-  val scenarioBuilder = scenario("BasicSimulationImpl")
-    .during(simulationDuration) { // how long the simulation will run for i.e 60 seconds
-      pace(pauseDuration) // how frequently the the action is executed
-        .exec(http("basic guest request") // execute action
-          .get("/")
-          .check(status.is(200))) // check result
-    }
+  val getScenario = GetScenario.getScenario
+
+  val postScenario = PostScenario.getScenario
+
+  val scenarioList = List(getScenario, postScenario)
 
 
-  /////////////////
-  // Setup Users //
-  /////////////////
+  //////////////////
+  // Inject Users //
+  //////////////////
 
-  val populationBuilder = scenarioBuilder.inject(atOnceUsers(numberOfUsers)) // inject x number of users all at once
+  val populationList = scenarioList.map(_.inject(atOnceUsers(numberOfUsers)))
 
   // other examples in the docs: https://gatling.io/docs/3.2/general/simulation_setup/
   // more complicated examples include:
@@ -68,7 +67,7 @@ class BasicSimulationImpl extends Simulation {
   // Run Everything //
   ////////////////////
 
-  setUp(populationBuilder) // inject scenarios
+  setUp(populationList) // inject scenarios
       .protocols(httpProtocol) // inject http protocols
       .assertions( // set assertions
         global.successfulRequests.percent.gte(95), // 95% of requests are successful
