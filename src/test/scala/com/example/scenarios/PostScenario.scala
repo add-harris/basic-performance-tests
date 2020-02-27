@@ -14,8 +14,8 @@ object PostScenario {
   val simulationDuration: Duration = Config.simulationDuration milliseconds
 
   val json: String = """{
-                        |"name": "Gary",
-                        |"surname": "Goodspeed"
+                        |"name": "Steven",
+                        |"surname": "Toast"
                         |}""".stripMargin
 
   val postBody: Body = StringBody(json)
