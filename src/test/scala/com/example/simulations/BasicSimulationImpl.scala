@@ -5,6 +5,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.protocol.HttpProtocolBuilder
 import com.example.scenarios.{GetScenario, PostScenario}
+import io.gatling.core.structure.{PopulationBuilder, ScenarioBuilder}
 
 import scala.concurrent.duration._
 
@@ -48,14 +49,15 @@ class BasicSimulationImpl extends Simulation {
 
   val postScenario = PostScenario.getScenario
 
-  val scenarioList = List(getScenario, postScenario)
+//  val scenarioList = List(getScenario, postScenario)
+  val scenarioList = List(postScenario)
 
 
   //////////////////
   // Inject Users //
   //////////////////
 
-  val populationList = scenarioList.map(_.inject(atOnceUsers(numberOfUsers)))
+  val populationList: List[PopulationBuilder] = scenarioList.map(_.inject(atOnceUsers(numberOfUsers)))
 
   // other examples in the docs: https://gatling.io/docs/3.2/general/simulation_setup/
   // more complicated examples include:
